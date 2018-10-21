@@ -27,10 +27,13 @@ export class ClsResolveDependency {
     public resolveDependency(inputJSON: any): IResult {
 
         try {
-            //TODO: Apply validation for invalid json object
 
             this.inputJSON = inputJSON;
+            //Apply validation
+            this.verifyInputJSONValidatin();
+            // find sequence entity
             this.findSequenceEnity();
+            // find parallel entity
             const parallelResutl = this.findParallelEntity();
             let squenceEntities = []; let parallelEntities = [];
             this.dependentEntities.forEach((x) => squenceEntities.push(x));
@@ -43,6 +46,26 @@ export class ClsResolveDependency {
             throw (error);
         }
     }
+
+    /**
+     * A situation in which the imports cannot happen
+     */
+    verifyInputJSONValidatin() {
+
+        try {
+            _.forOwn(this.inputJSON, (value: any, key: string) => {
+                value = (value.length) ? value : [];
+                value.forEach((x: string) => {
+                    let dependentEntities = this.inputJSON[x] ? this.inputJSON[x] : [];
+                    if (_.includes(dependentEntities, key)) throw ('Invalid InputJSON')
+                });
+              
+            });
+        }
+        catch (error) {
+            throw (error);
+        }
+    }
     /**
      * 
      * @param x key
@@ -50,7 +73,7 @@ export class ClsResolveDependency {
     private arrangeOrder(x: string) {
 
         let values = this.inputJSON[x] ? this.inputJSON[x] : [];
-        values.forEach((y:string) => this.arrangeOrder(y))
+        values.forEach((y: string) => this.arrangeOrder(y))
         this.dependentEntities.add(x);
     }
 
@@ -64,7 +87,7 @@ export class ClsResolveDependency {
         let unique = _.uniq(allValues);
         let diffEntity = _.difference(keys, unique);
         let parallelEntity = new Set();
-        diffEntity.forEach((x:string) => {
+        diffEntity.forEach((x: string) => {
             const values = this.inputJSON[x] ? this.inputJSON[x] : [];
             if (!values.length) {
                 parallelEntity.add(x);
@@ -78,7 +101,7 @@ export class ClsResolveDependency {
     private findSequenceEnity() {
 
         let data = new Set();
-        _.forOwn(this.inputJSON, (value:any, key:string) => {
+        _.forOwn(this.inputJSON, (value: any, key: string) => {
             if (!value.length)
                 this.dependentEntities.add(key);
             else {
@@ -89,6 +112,8 @@ export class ClsResolveDependency {
         data.forEach((x) => this.arrangeOrder(x))
 
     }
+
+
 }
 
 const objTest: ClsResolveDependency = new ClsResolveDependency();

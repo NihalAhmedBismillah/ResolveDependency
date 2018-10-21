@@ -18,9 +18,12 @@ var ClsResolveDependency = /** @class */ (function () {
      */
     ClsResolveDependency.prototype.resolveDependency = function (inputJSON) {
         try {
-            //TODO: Apply validation for invalid json object
             this.inputJSON = inputJSON;
+            //Apply validation
+            this.verifyInputJSONValidatin();
+            // find sequence entity
             this.findSequenceEnity();
+            // find parallel entity
             var parallelResutl = this.findParallelEntity();
             var squenceEntities_1 = [];
             var parallelEntities_1 = [];
@@ -32,6 +35,25 @@ var ClsResolveDependency = /** @class */ (function () {
         }
         catch (error) {
             console.log('Error : ', JSON.stringify(error));
+            throw (error);
+        }
+    };
+    /**
+     * A situation in which the imports cannot happen
+     */
+    ClsResolveDependency.prototype.verifyInputJSONValidatin = function () {
+        var _this = this;
+        try {
+            _.forOwn(this.inputJSON, function (value, key) {
+                value = (value.length) ? value : [];
+                value.forEach(function (x) {
+                    var dependentEntities = _this.inputJSON[x] ? _this.inputJSON[x] : [];
+                    if (_.includes(dependentEntities, key))
+                        throw ('Invalid InputJSON');
+                });
+            });
+        }
+        catch (error) {
             throw (error);
         }
     };

@@ -112,5 +112,21 @@ describe('Test for ClsResolveDependency', function () {
             return [2 /*return*/];
         });
     }); });
+    test('Scenario sending Invalid input object ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
+        var objTest, inputJSON;
+        return __generator(this, function (_a) {
+            objTest = new app_1.ClsResolveDependency();
+            inputJSON = { 'A': ["B"], 'B': ["D", "C", "M", "N", "A"], 'C': ["D"], 'D': ["F"] };
+            try {
+                objTest.resolveDependency(inputJSON);
+                done();
+            }
+            catch (error) {
+                expect(error).toEqual('Invalid InputJSON');
+                done();
+            }
+            return [2 /*return*/];
+        });
+    }); });
     // TODO: we can add also add more scenarios... 
 });
