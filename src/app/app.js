@@ -8,10 +8,14 @@ var inputJSON = { 'A': ["B"], 'B': ["D", "C"], 'C': ["D"], 'D': ["F"], 'E': [], 
 var ClsResolveDependency = /** @class */ (function () {
     function ClsResolveDependency() {
         this.inputJSON = {};
-        this.depndentTable = new Set();
+        this.dependentEntities = new Set();
         this.inputJSON = {};
-        this.depndentTable = new Set();
+        this.dependentEntities = new Set();
     }
+    /**
+     * Sequence starting from the independent table to the most dependent table
+     * @param inputJSON
+     */
     ClsResolveDependency.prototype.resolveDependency = function (inputJSON) {
         try {
             //TODO: Apply validation for invalid json object
@@ -20,8 +24,9 @@ var ClsResolveDependency = /** @class */ (function () {
             var parallelResutl = this.findParallelEntity();
             var squenceEntities_1 = [];
             var parallelEntities_1 = [];
-            this.depndentTable.forEach(function (x) { return squenceEntities_1.push(x); });
+            this.dependentEntities.forEach(function (x) { return squenceEntities_1.push(x); });
             parallelResutl.forEach(function (x) { return parallelEntities_1.push(x); });
+            // Find difference
             squenceEntities_1 = _.difference(squenceEntities_1, parallelEntities_1);
             return { squenceEntities: squenceEntities_1, parallelEntities: parallelEntities_1 };
         }
@@ -38,7 +43,7 @@ var ClsResolveDependency = /** @class */ (function () {
         var _this = this;
         var values = this.inputJSON[x] ? this.inputJSON[x] : [];
         values.forEach(function (y) { return _this.arrangeOrder(y); });
-        this.depndentTable.add(x);
+        this.dependentEntities.add(x);
     };
     /**
      *  Mark all the imports that can happen in parallel
@@ -66,17 +71,13 @@ var ClsResolveDependency = /** @class */ (function () {
         var data = new Set();
         _.forOwn(this.inputJSON, function (value, key) {
             if (!value.length)
-                _this.depndentTable.add(key);
+                _this.dependentEntities.add(key);
             else {
                 data.add(key);
-                value.forEach(function (x) {
-                    data.add(x);
-                });
+                value.forEach(function (x) { return data.add(x); });
             }
         });
-        data.forEach(function (x) {
-            _this.arrangeOrder(x);
-        });
+        data.forEach(function (x) { return _this.arrangeOrder(x); });
     };
     return ClsResolveDependency;
 }());

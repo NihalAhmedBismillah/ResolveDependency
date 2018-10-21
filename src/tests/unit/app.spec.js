@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * Imort lib and classes
+ * Import lib and classes
  */
 var app_1 = require("../../app/app");
 describe('Test for ClsResolveDependency', function () {
@@ -48,7 +48,7 @@ describe('Test for ClsResolveDependency', function () {
             return [2 /*return*/];
         });
     }); });
-    test('Scenario sending valid input object all exist table ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
+    test('Scenario sending valid input object all dependent and independent entities ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
         var objTest, inputJSON, expectSquenceEntitiesData, expectParallelEntitiesData, data;
         return __generator(this, function (_a) {
             objTest = new app_1.ClsResolveDependency();
@@ -64,7 +64,7 @@ describe('Test for ClsResolveDependency', function () {
             return [2 /*return*/];
         });
     }); });
-    test('Scenario sending valid input object other non exits table like M,N and added P independen entity ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
+    test('Scenario sending valid input object other non exits table like M,N and added P Independent entity ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
         var objTest, inputJSON, expectSquenceEntitiesData, expectParallelEntitiesData, data;
         return __generator(this, function (_a) {
             objTest = new app_1.ClsResolveDependency();
@@ -80,5 +80,37 @@ describe('Test for ClsResolveDependency', function () {
             return [2 /*return*/];
         });
     }); });
-    // TODO: We call add various scenarios 
+    test('Scenario sending valid input object with all Independent entities ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
+        var objTest, inputJSON, expectSquenceEntitiesData, expectParallelEntitiesData, data;
+        return __generator(this, function (_a) {
+            objTest = new app_1.ClsResolveDependency();
+            inputJSON = { 'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': [], 'P': [] };
+            expectSquenceEntitiesData = [];
+            expectParallelEntitiesData = ['A', 'B', 'C', 'D', 'E', 'F', 'P'];
+            data = objTest.resolveDependency(inputJSON);
+            expect(data.squenceEntities.length).toEqual(expectSquenceEntitiesData.length);
+            expect(data.squenceEntities).toEqual(expectSquenceEntitiesData);
+            expect(data.parallelEntities.length).toEqual(expectParallelEntitiesData.length);
+            expect(data.parallelEntities).toEqual(expectParallelEntitiesData);
+            done();
+            return [2 /*return*/];
+        });
+    }); });
+    test('Scenario sending valid input object with all dependent entities ====>\n', function (done) { return __awaiter(_this, void 0, void 0, function () {
+        var objTest, inputJSON, expectSquenceEntitiesData, expectParallelEntitiesData, data;
+        return __generator(this, function (_a) {
+            objTest = new app_1.ClsResolveDependency();
+            inputJSON = { 'A': ["B"], 'B': ["D", "C", "M", "N"], 'C': ["D"], 'D': ["F"] };
+            expectSquenceEntitiesData = ['F', 'D', 'C', 'M', 'N', 'B', 'A'];
+            expectParallelEntitiesData = [];
+            data = objTest.resolveDependency(inputJSON);
+            expect(data.squenceEntities.length).toEqual(expectSquenceEntitiesData.length);
+            expect(data.squenceEntities).toEqual(expectSquenceEntitiesData);
+            expect(data.parallelEntities.length).toEqual(expectParallelEntitiesData.length);
+            expect(data.parallelEntities).toEqual(expectParallelEntitiesData);
+            done();
+            return [2 /*return*/];
+        });
+    }); });
+    // TODO: we can add also add more scenarios... 
 });

@@ -14,11 +14,11 @@ export interface IResult {
 export class ClsResolveDependency {
 
     inputJSON: any = {};
-    depndentTable = new Set();
+    dependentEntities = new Set();
 
     constructor() {
         this.inputJSON = {};
-        this.depndentTable = new Set();
+        this.dependentEntities = new Set();
     }
     /**
      * Sequence starting from the independent table to the most dependent table
@@ -33,7 +33,7 @@ export class ClsResolveDependency {
             this.findSequenceEnity();
             const parallelResutl = this.findParallelEntity();
             let squenceEntities = []; let parallelEntities = [];
-            this.depndentTable.forEach((x) => squenceEntities.push(x));
+            this.dependentEntities.forEach((x) => squenceEntities.push(x));
             parallelResutl.forEach((x) => parallelEntities.push(x));
             // Find difference
             squenceEntities = _.difference(squenceEntities, parallelEntities);
@@ -51,7 +51,7 @@ export class ClsResolveDependency {
 
         let values = this.inputJSON[x] ? this.inputJSON[x] : [];
         values.forEach((y:string) => this.arrangeOrder(y))
-        this.depndentTable.add(x);
+        this.dependentEntities.add(x);
     }
 
     /**
@@ -80,7 +80,7 @@ export class ClsResolveDependency {
         let data = new Set();
         _.forOwn(this.inputJSON, (value:any, key:string) => {
             if (!value.length)
-                this.depndentTable.add(key);
+                this.dependentEntities.add(key);
             else {
                 data.add(key)
                 value.forEach((x) => data.add(x))
